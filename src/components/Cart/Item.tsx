@@ -2,14 +2,19 @@ import { BiMinus, BiPlus } from "react-icons/bi";
 
 import { MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
-import { cartItem } from "../../../types";
-import { deleteCartItem, getFoodyById, updateCartItemQty } from "../../utils/functions";
+import { cartItem, cartSingleItem } from "../../../types";
+import {
+  deleteCartItem,
+  getFoodyById,
+  updateCartItemQty,
+} from "../../utils/functions";
 import { useStateValue } from "../../context/StateProvider";
 
-const CartItem = ({ item }: { item: cartItem }) => {
+const CartItem = ({ item }: { item: cartSingleItem }) => {
   const [{ foodItems, cartItems }, dispatch] = useStateValue();
-  const { id, fid, qty } = item;
-  const foodItem = getFoodyById(foodItems, fid);
+  const { id, foodId, qty } = item;
+
+  const foodItem = getFoodyById(foodItems, foodId);
 
   return (
     <div className="w-full p-1 px-2 rounded-lg bg-cartItem hover:shadow-md flex items-center justify-between gap-2 cursor-pointer ">
@@ -28,7 +33,7 @@ const CartItem = ({ item }: { item: cartItem }) => {
         </div>
       </div>
 
-      <div className="group flex items-center gap-2  cursor-pointer">
+      {/* <div className="group flex items-center gap-2  cursor-pointer">
         <motion.div
           className=""
           whileTap={{ scale: 0.75 }}
@@ -46,15 +51,15 @@ const CartItem = ({ item }: { item: cartItem }) => {
         >
           <BiPlus className="text-gray-50" />
         </motion.div>
-      </div>
+      </div> */}
 
-      <motion.div
+      {/* <motion.div
         whileTap={{ scale: 0.75 }}
         className="text-sm text-gray-50 w-6 h-6 rounded-lg bg-cartNumBg flex items-center justify-center"
         onClick={() => deleteCartItem(cartItems, foodItems, item, dispatch)}
       >
         <MdDelete />
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 };

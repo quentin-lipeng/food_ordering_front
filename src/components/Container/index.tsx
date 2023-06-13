@@ -7,8 +7,9 @@ import { motion } from "framer-motion";
 import NotFound from "../NotFound";
 import { isAdmin } from "../../utils/functions";
 import { Banana } from "../Assets";
+import { useStateValue } from "../../context/StateProvider";
 
-// 菜品视图
+// 菜品列表视图
 const Container = ({
   scrollOffset,
   col,
@@ -26,7 +27,7 @@ const Container = ({
       containerRef.current.scrollLeft += scrollOffset;
     }
   }, [scrollOffset]);
-  // const [{ user }, dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
   return (
     <motion.div
       ref={containerRef}
@@ -49,19 +50,10 @@ const Container = ({
               key={food.foodId}
               item={food}
               col={col}
-              admin={isAdmin(null)}
+              admin={isAdmin(user)}
             />
           );
         })}
-      {/* {items &&
-        items.map((item: FoodItem) => (
-          <SingleFoodItem
-            key={item.id}
-            item={item}
-            col={col}
-            admin={isAdmin(user)}
-          />
-        ))} */}
       {!items &&
         (!col ? (
           <Loader progress={"Fetching Food Items....."} />

@@ -16,13 +16,14 @@ import {
   calculateCartTotal,
   dispatchUsers,
   fetchCategories,
+  fetchUser,
   fetchUserCartData,
   isAdmin,
 } from "./utils/functions";
 
 import { AnimatePresence } from "framer-motion";
 import Contact from "./components/Contact";
-// import { ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useStateValue } from "./context/StateProvider";
 
@@ -34,7 +35,7 @@ function App() {
 
   useEffect(() => {
     fetchCategories(dispatch);
-    dispatchUsers(dispatch);
+    // dispatchUsers(dispatch);
     user && fetchUserCartData(user, dispatch);
   }, [user, dispatch]);
 
@@ -45,7 +46,7 @@ function App() {
   }, [cartItems, foodItems, dispatch]);
   return (
     <AnimatePresence exitBeforeEnter>
-      {/* <ToastContainer /> */}
+      <ToastContainer />
       <div className="w-screen h-auto min-h-[100vh] flex flex-col bg-primary">
         {showCart && <Cart />}
         {showContactForm && <Contact />}
