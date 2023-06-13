@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useStateValue } from "../../context/StateProvider";
-import { EMAILSIGNIN } from "../../Firebase";
+import { fetchToken, fetchUser, setCookie } from "../../utils/functions";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,36 +13,43 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const EmailAuth = () => {
-    if (!user) {
-      if (email.length > 0 && password.length > 0) {
-        toast.promise(
-          EMAILSIGNIN(email, password),
-          {
-            pending: "Signing in...",
-            success: "Signin successful: WELCOME!",
-            error: "Error signing account, Please try again🤗",
+  const verifyForm = (): Boolean => {
+    return email.length > 0 && password.length > 0;
+  };
+
+  const EmailAuth = async () => {
+    if (verifyForm()) {
+      toast
+        .promise(fetchToken(email, password), {
+          pending: "Signing in...",
+          success: "Signin successful: WELCOME!",
+          error: "Error signing account, Please try again🤗",
+        })
+        .then(async (tokenData) => {
+          if (tokenData) {
+            setCookie("fatc", tokenData.access_token, 1);
+            setCookie("frtc", tokenData.refresh_token, 1);
+            const userInfo = await fetchUser();
+            if (userInfo.userId !== 0) {
+              dispatch({
+                type: "SET_USER",
+                user: userInfo,
+              });
+              navigate("/");
+              // store sessionStorage maybe or in server side
+              sessionStorage.setItem("user", JSON.stringify(userInfo));
+            } else {
+              toast.error("error occuer in login page");
+            }
           }
-        ).then((userData) => {
-          // Signed in
-          const user = userData[0]; 
-          dispatch({
-            type: "SET_USER",
-            user: user,
-          });
-          localStorage.setItem("user", JSON.stringify(user));
-          navigate("/");
-        }
-        ).catch((error) => {
+        })
+        .catch((error) => {
           // const errorCode = error.code;
           const errorMessage = error.message;
           toast.error(errorMessage, { autoClose: 15000 });
-        }
-        );
-
-      } else {
-        toast.warn("Please fill all the fields", { autoClose: 15000 });
-      }
+        });
+    } else {
+      toast.warn("Please fill all the fields", { autoClose: 15000 });
     }
   };
 
@@ -53,10 +60,10 @@ const Login = () => {
           <ImageBox />
           <div className="w-full md:w-[30rem]">
             <form className="p-2">
-              <ProviderAuth />
+              {/* <ProviderAuth /> */}
               <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                 <p className="text-center text-textColor text-sm font-semibold mx-4 mb-0">
-                  OR
+                  Login
                 </p>
               </div>
               <div className="mb-6">
@@ -77,26 +84,26 @@ const Login = () => {
                 />
               </div>
 
-              <div className="flex justify-between items-center mb-6">
+              {/* <div className="flex justify-between items-center mb-6">
                 <Link
                   to="/"
                   className="text-orange-600 hover:text-orange-700 focus:text-orange-700 active:text-orange-800 duration-200 transition ease-in-out"
                 >
                   Forgot password?
                 </Link>
-              </div>
+              </div> */}
 
               <motion.p
                 className="cursor-pointer flex items-center justify-center px-7 py-3 bg-gradient-to-br from-orange-400 to-orange-500 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-orange-600 hover:shadow-lg focus:bg-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
                 onClick={EmailAuth}
                 whileHover={{ scale: 1.1 }}
               >
-                Sign in
+                登陆
               </motion.p>
 
               <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                 <p className="text-center text-sm text-textColor font-semibold mx-4 mb-0">
-                  Don't have an account?
+                  也许需要创建一个账户？
                 </p>
               </div>
               <Link to={"/register"}>
@@ -104,7 +111,7 @@ const Login = () => {
                   whileHover={{ scale: 0.99 }}
                   className="cursor-pointer flex items-center justify-center px-7 py-3 bg-gradient-to-br from-orange-400 to-orange-500 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-orange-600 hover:shadow-lg focus:bg-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
                 >
-                  Sign Up
+                  注册一下
                 </motion.p>
               </Link>
             </form>

@@ -23,7 +23,7 @@ import {
 
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { toast } from "react-toastify";
-import { shuffleItems } from "../utils/functions";
+import { getCookie, shuffleItems } from "../utils/functions";
 
 export const firebaseUploadImage = (
   imageFile,
@@ -141,6 +141,31 @@ export const EMAILSIGNIN = async (email, password) => {
   let user = result.user.providerData[0];
 
   return await firebaseGetUser(user.uid);
+};
+
+export const appFetchUser = async () => {
+  const ACCESS_TOKEN_NAME = "fatc";
+  const accessToken = getCookie(ACCESS_TOKEN_NAME);
+  const userResp = await fetch("/api/user/info", {
+    method: "GET",
+    cache: "no-cache",
+    headers: {
+      Authorization: "Bearer ".concat(accessToken),
+    },
+  });
+  return userResp;
+};
+
+export const appFetchToken = async (verifyData) => {
+  const tokenResp = await fetch("api/auth/authenticate", {
+    method: "POST",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(verifyData),
+  });
+  return tokenResp;
 };
 
 export const appFetchCategory = async () => {

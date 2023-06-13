@@ -40,9 +40,13 @@ export type Food = {
   category?: string;
 };
 
+export type Token = {
+  access_token: string;
+  refresh_token: string;
+};
 export type CommonResp = {
   msg: string;
-  data: FoodResp;
+  data: FoodResp | UserInfo;
 };
 
 export type FoodCategory = {
@@ -67,6 +71,13 @@ export type cartItem = {
   qty: number;
 };
 
+export type cartSingleItem = {
+  id: number;
+  foodId: number;
+  userId: number;
+  qty: number;
+};
+
 export type cartItems = {
   items: cartItem[];
 };
@@ -78,6 +89,13 @@ export type User = {
   phoneNumber?: string;
   providerId: string;
   photoURL?: string;
+};
+
+export type UserInfo = {
+  userId: number;
+  username: string;
+  email: string;
+  phoneNumber: string;
 };
 
 export type FoodCategories = FoodCategory[];

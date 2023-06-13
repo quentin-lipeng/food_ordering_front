@@ -7,6 +7,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { Food, FoodItem } from "../../../types";
 const Action = ({ food, admin }: { food: Food; admin?: boolean }) => {
   const [{ cartItems, foodItems, user }, dispatch] = useStateValue();
+
   return (
     <div className="flex flex-col gap-2">
       <motion.div

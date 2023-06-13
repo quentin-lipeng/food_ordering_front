@@ -23,7 +23,7 @@ const Menu = ({ title }: { title?: string }) => {
       <div className="w-full flex items-center justify-center">
         <Title title={title || "Our Hot Dishes"} center />
       </div>
-      {/* 菜品分类 */}
+      {/* 菜品分类过滤按钮 */}
       <Filters filter={filter} setFilter={setFilter} />
       {/*  菜品 */}
       <Container

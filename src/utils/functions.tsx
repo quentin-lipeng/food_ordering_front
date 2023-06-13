@@ -1,4 +1,4 @@
-import { FoodItem, cartItem } from "../../types";
+import { CommonResp, FoodItem, Token, UserInfo, cartItem } from "../../types";
 import {
   firebaseAddToCart,
   firebaseDeleteCartItem,
@@ -11,6 +11,8 @@ import {
   firebaseUpdateCartItem,
   firebaseUpdateUser,
   appFetchCategory,
+  appFetchToken,
+  appFetchUser,
 } from "../Firebase";
 
 import { MdShoppingBasket } from "react-icons/md";
@@ -23,6 +25,9 @@ export const addToCart = async (
   fid: number,
   dispatch: any
 ) => {
+  console.log(user);
+  console.log(fid);
+
   if (!user) {
     toast.error("Please login to add items to cart", {
       icon: <MdShoppingBasket className="text-2xl text-cartNumBg" />,
@@ -62,6 +67,68 @@ export const dispatchtUserCartItems = (
   });
 
   return cartItems;
+};
+
+export const setCookie = (
+  name: string,
+  value: string,
+  expirationDays: number
+) => {
+  var date = new Date();
+  date.setTime(date.getTime() + expirationDays * 24 * 60 * 60 * 1000);
+  var expires = "expires=" + date.toUTCString();
+  document.cookie = name + "=" + value + ";" + expires + ";path=/";
+};
+
+export const getCookie = (cookieName: string) => {
+  var name = cookieName + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var cookieArray = decodedCookie.split(";");
+
+  for (var i = 0; i < cookieArray.length; i++) {
+    var cookie = cookieArray[i];
+    while (cookie.charAt(0) == " ") {
+      cookie = cookie.substring(1);
+    }
+    if (cookie.indexOf(name) == 0) {
+      return cookie.substring(name.length, cookie.length);
+    }
+  }
+
+  return "";
+};
+
+export const fetchUser = async (): Promise<UserInfo> => {
+  const userResp = await appFetchUser();
+  if (userResp.status === 200) {
+    const userInfo = await userResp.json();
+    return userInfo.data;
+  }
+  return {
+    userId: 0,
+    username: "",
+    email: "",
+    phoneNumber: "",
+  };
+};
+
+export const fetchToken = async (
+  email: string,
+  password: string
+): Promise<Token> => {
+  const tokenResp = await appFetchToken({
+    email: email,
+    password: password,
+  });
+  if (tokenResp.status === 200) {
+    return tokenResp.json();
+  } else {
+    console.log("failed");
+    return {
+      access_token: "",
+      refresh_token: "",
+    };
+  }
 };
 
 export const fetchCategories = async (dispatch: any) => {
@@ -296,9 +363,7 @@ export const ToggleAdminMode = (dispatch: any, state: boolean) => {
 };
 
 export const isAdmin = (user: any) => {
-  let isAdmin =
-    user?.email === "bentilshadrack72@gmail.com" ||
-    user?.email === "admin@test.com";
+  let isAdmin = user?.email === "mike@qq.com";
   return isAdmin;
 };
 

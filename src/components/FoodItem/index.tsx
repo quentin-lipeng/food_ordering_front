@@ -36,10 +36,11 @@ export const SingleFoodItem = ({
       <div className="w-full flex items-end justify-end flex-col">
         <p className="text-textColor font-semi-bold text-lg">{foodName}</p>
         <p className="mt-1 text-sm text-gray-500">{foodDesp} </p>
+        {/* // todo calories maybe */}
         {/* {admin && (<p className="mt-1 text-sm text-gray-500">{calories} calories </p>)} */}
         <div className="flex items-center justify-between gap-8 ">
           <p className="text-base text-headingColor font-semibold">
-            <span className="text-sm text-red-600">₵</span> {foodPrice}
+            <span className="text-sm text-red-600">￥</span> {foodPrice}
           </p>
         </div>
       </div>
